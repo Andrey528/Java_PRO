@@ -1,0 +1,67 @@
+version: "3.9"
+services:
+  kafka-broker:
+    image: confluentinc/cp-kafka:5.5.2
+    container_name: kafka-broker
+    hostname: kafka-broker
+    expose:
+      - "9092"
+    ports: # Проброс портов для листенеров
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      LANG: en_US.utf8
+      LC_ALL: en_US.utf8
+      JDK_JAVA_OPTIONS: -Dfile.encoding=UTF-8 -Dsun.jnu.enxcoding=UTF-8
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094 # Объявление внутреннего и внешнего листенера
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-broker:9092,OUTSIDE://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL # Указываем, какой листенер будет использовать брокер
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # Адрес зоокипера
+      KAFKA_ADVERTISED_HOST_NAME: kafka-broker
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG4J_ROOT_LOGLEVEL: ERROR
+      KAFKA_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.apache.kafka=ERROR,kafka.cluster=ERROR,kafka.container=ERROR
+      KAFKA_LOG_RETENTION_MS: 86400000
+      KAFKA_LOG_RETENTION_HOURS: 24
+      KAFKA_LOG_RETENTION_BYTES: 1073741824
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 20000
+      KAFKA_LOG_SEGMENT_BYTES: 107374182
+      KAFKA_LOG_SEGMENT_DELETE_DELAY_MS: 1000
+    depends_on:
+      - zookeeper
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8081:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: true
+      KAFKA_CLUSTERS_0_NAME: esb
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-broker:9092
+
+  zookeeper:
+    image: zookeeper:3.5.10
+    container_name: zookeeper
+    expose:
+      - "2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOO_MY_ID: 1
+
+  zoonavigator:
+    image: elkozmon/zoonavigator:0.7.1
+    container_name: zoonavigator
+    restart: unless-stopped
+    ports:
+      - 9002:9000/tcp
+    environment:
+      HTTP_PORT: 9000
+      AUTO_CONNECT_CONNECTION_STRING: 'zookeeper:2181'
+      ZK_CLIENT_TIMEOUT_MILLIS: 5000
+      ZK_CONNECT_TIMEOUT_MILLIS: 5000
+      ZK_SASL_CLIENT: 'false'
+      ZK_CLIENT_CNXN_SOCKET: 'org.apache.zookeeper.ClientCnxnSocketNIO'
+    depends_on:
+      - zookeeper
