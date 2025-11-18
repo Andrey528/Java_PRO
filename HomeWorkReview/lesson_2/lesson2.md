@@ -9,7 +9,7 @@
 ### 1. Поднять окружение Kafka в Docker с помощью docker-compose.
 
 Docker-compose:
-[kafka-docker-compose](./kafka-docker-compose.yml)
+[kafka-docker-compose](../../docker/lesson_2/kafka-docker-compose.yml)
 
 ### 2. Проверить, что все контейнеры работают.
 
@@ -64,11 +64,11 @@ docker exec -ti kafka-broker /usr/bin/kafka-console-consumer --bootstrap-server 
 
 ### 6. Написать Java Producer, который отправляет случайные данные (например, фрукты) в Kafka.
 
-Код в классе lesson2.KafkaProducerExample
+Код в классе [KafkaProducerExample](../../src/main/java/lesson2/KafkaProducerExample.java)
 
 ### 7. Написать Java Consumer, который читает эти данные.
 
-Код в классе lesson2.KafkaConsumerExample
+Код в классе [KafkaConsumerExample](../../src/main/java/lesson2/KafkaConsumerExample.java)
 
 ### 8. Проверить отправку и получение через Kafka UI.
 
