@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hello-statefulset
+spec:
+  serviceName: "hello-service"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-stateful
+  template:
+    metadata:
+      labels:
+        app: hello-stateful
+    spec:
+      containers:
+        - name: hello-container
+          image: busybox
+          command:
+            - /bin/sh
+            - -c
+            - echo "Hello from pod $(hostname)" && sleep 300

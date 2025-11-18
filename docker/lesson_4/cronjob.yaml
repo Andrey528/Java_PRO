@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: time-cronjob
+spec:
+  schedule: "*/1 * * * *"  # Каждую минуту
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: time-container
+              image: busybox
+              args:
+                - /bin/sh
+                - -c
+                - date
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: text-cronjob
+spec:
+  schedule: "*/2 * * * *"  # Каждые 2 минуты
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: text-container
+              image: busybox
+              args:
+                - /bin/sh
+                - -c
+                - echo "Arbitrary text"
+          restartPolicy: OnFailure

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: hello-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: hello-daemon
+  template:
+    metadata:
+      labels:
+        app: hello-daemon
+    spec:
+      containers:
+        - name: hello-container
+          image: busybox
+          args:
+            - /bin/sh
+            - -c
+            - while true; do echo "Hello from $(hostname)"; sleep 60; done
