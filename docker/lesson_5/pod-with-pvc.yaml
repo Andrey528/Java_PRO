@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvc-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: busybox
+      command: ["sh", "-c", "while true; do echo 'Log entry at $(date)' >> /data/log.txt; sleep 5; done"]
+      volumeMounts:
+        - mountPath: "/data"
+          name: storage-volume
+  volumes:
+    - name: storage-volume
+      persistentVolumeClaim:
+        claimName: logs-pvc

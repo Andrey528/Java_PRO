@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-web
+  template:
+    metadata:
+      labels:
+        app: demo-web
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: shared-data
+        - name: writer
+          image: busybox
+          command: ["sh", "-c", "while true; do echo '<html><body><h1>Date: '`date`' Color: $(APP_COLOR)</h1></body></html>' > /data/index.html; sleep 10; done"]
+          envFrom:
+            - configMapRef:
+                name: app-config
+          volumeMounts:
+            - mountPath: /data
+              name: shared-data
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: logs-pvc
