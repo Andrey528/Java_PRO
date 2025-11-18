@@ -55,7 +55,7 @@ k3d cluster create mycluster
 **Подготовить манифест Pod с любым веб-сервером (например, nginx).**
 
 Pod.yaml:
-[kafka-docker-compose](../../docker/lesson_3/pod.yaml)
+[pod.yaml](../../docker/lesson_3/pod.yaml)
 
 **Применить манифест и проверить, что Pod запустился.**
 
@@ -86,7 +86,7 @@ kubectl get pods
 **Подготовить манифест Deployment с 1 репликой того же веб-сервера.**
 
 Pod.yaml:
-[kafka-docker-compose](../../docker/lesson_3/deployment.yaml)
+[deployment.yaml](../../docker/lesson_3/deployment.yaml)
 
 **Применить манифест и проверить работу приложения.**
 
